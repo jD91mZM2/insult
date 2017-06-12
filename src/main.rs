@@ -39,8 +39,6 @@ fn do_main() -> i32 {
 		}
 	}
 
-	println!("{:?}", words);
-
 	let mut last = None;
 	let mut he_she_it = false;
 	let mut finished = false;
@@ -171,7 +169,6 @@ fn do_main() -> i32 {
 		0
 	} else {
 		println!();
-		println!("{:?}", words);
 		writeln!(io::stderr(), "Too many tries. Stuck in infinite loop?").unwrap();
 		1
 	}
