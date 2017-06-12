@@ -39,6 +39,8 @@ fn do_main() -> i32 {
 		}
 	}
 
+	println!("{:?}", words);
+
 	let mut last = None;
 	let mut he_she_it = false;
 	let mut finished = false;
@@ -117,7 +119,15 @@ fn do_main() -> i32 {
 
 				if !words
 				        .iter()
-				        .any(|item| if let Word::And = *item { true } else { false }) {
+				        .any(
+					|item| if let Word::And = *item {
+						true
+					} else if let Word::Ending(_) = *item {
+						true
+					} else {
+						false
+					}
+				) {
 					finished = true;
 					break;
 				}
