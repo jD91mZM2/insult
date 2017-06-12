@@ -105,7 +105,7 @@ const NOUNS: &'static [(&str, bool)] = &[
 	("the communists", false),
 	("the cozzers", false),
 	("the Deep Ones", false),
-	("the Hell's Grannies gang", true),
+	("the Hell's Grannies gang", false),
 	("the meaning of life", true),
 	("the Nazis", false),
 	("the Queen", true),
