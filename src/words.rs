@@ -20,12 +20,14 @@ impl Verb {
 				.replace("[has/have]", "has")
 				.replace("[was/were]", "was")
 				.replace("(s)", "s")
+				.replace("(es)", "es")
 		} else {
 			self.0
 				.replace("[is/are]", "are")
 				.replace("[has/have]", "have")
 				.replace("[was/were]", "were")
 				.replace("(s)", "")
+				.replace("(es)", "")
 		};
 
 		if let Some(noun) = noun {
