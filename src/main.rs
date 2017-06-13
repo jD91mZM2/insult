@@ -175,9 +175,6 @@ fn do_main() -> i32 {
 		0
 	} else {
 		println!();
-		for word in words {
-			println!("{:?}", word);
-		}
 		writeln!(io::stderr(), "Too many tries. Stuck in infinite loop?").unwrap();
 		1
 	}
