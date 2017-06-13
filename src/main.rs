@@ -50,7 +50,7 @@ fn do_main() -> i32 {
 			break;
 		}
 
-		let i = rand.gen::<usize>() % words.len();
+		let mut i = rand.gen::<usize>() % words.len();
 		let word = words[i].clone();
 
 		match word {
@@ -99,6 +99,11 @@ fn do_main() -> i32 {
 							unreachable!();
 						}
 						words.remove(pos);
+						if pos < i {
+							// Uh oh! We wouldn't want words.remove(i)
+							// to use an outdated index!
+							i -= 1;
+						}
 					} else {
 						continue;
 					}
