@@ -82,22 +82,23 @@ fn do_main() -> i32 {
 				let mut new_he_she_it = he_she_it;
 
 				if verb.has_noun() {
-					let item = words
+					let pos = words
 						.iter()
-						.find(
-							|item| if let Word::Noun(..) = **item {
+						.position(
+							|item| if let Word::Noun(..) = *item {
 								true
 							} else {
 								false
 							}
 						);
-					if let Some(item) = item {
-						if let Word::Noun(ref string, new_he_she_it2) = *item {
+					if let Some(pos) = pos {
+						if let Word::Noun(ref string, new_he_she_it2) = words[pos] {
 							new_he_she_it = new_he_she_it2;
 							noun = Some(string.clone());
 						} else {
 							unreachable!();
 						}
+						words.remove(pos);
 					} else {
 						continue;
 					}
