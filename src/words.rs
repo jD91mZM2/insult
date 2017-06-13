@@ -181,7 +181,7 @@ const ENDINGS: &'static [&str] = &[
 	"says the fortune cookie!",
 	"so go back to your seat!",
 	"so, you know, well, innit, eh?!",
-	"товарищ! (tovarishch!) [friend!]",
+	"товарищ!",
 	"which is an ancient Chinese secret!",
 	"which makes me stiff!",
 	"which might cause death!",
