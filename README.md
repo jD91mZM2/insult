@@ -9,7 +9,10 @@ Well, me neither.
 
 ## Flavors!
 
-This project comes in "flavors". For example, you might wanna have references from TV series in insults...  
-Well go ahead, check out this project's [branches](https://github.com/legolord208/insult/branches).
+You can edit this project's config files.  
+They are located in:  
+ - Linux: `~/.config/insult/`
+ - Mac OS: `~/Application/Preferences/insult/`
+ - Windows, Other: It creates an `insult/` folder in your current directory.
 
-In the future these flavors might become config files instead.
+Well go ahead, check out this project's [branches](https://github.com/legolord208/insult/branches) if you want some sample configs.
