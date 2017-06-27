@@ -1,6 +1,6 @@
 [package]
 name = "insult"
-version = "0.1.3"
+version = "1.0.0"
 authors = ["LEGOlord208 <LEGOlord208@krake.one>"]
 
 [dependencies]
