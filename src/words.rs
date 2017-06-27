@@ -135,7 +135,7 @@ impl WordsFile {
 		Word::Ending(word.clone())
 	}
 	pub fn gen_verb(&self, rand: &mut ThreadRng) -> Word {
-		let word = &self.verbs[rand.gen::<usize>() % self.endings.len()];
+		let word = &self.verbs[rand.gen::<usize>() % self.verbs.len()];
 		Word::Verb(Verb(word.clone()))
 	}
 }
