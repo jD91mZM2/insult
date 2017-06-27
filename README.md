@@ -7,7 +7,9 @@
 Did you know that `the Royal Family can't exercise because of your sister` or that `your wife probably murdered your husband`?  
 Well, me neither.
 
-## It's future
+## Flavors!
 
-C'mmon. It's just a small application. Doesn't really have a future.  
-However, I might add some actual command line options...
+This project comes in "flavors". For example, you might wanna have references from TV series in insults...  
+Well go ahead, check out this project's [branches](https://github.com/legolord208/insult/branches).
+
+In the future these flavors might become config files instead.
