@@ -1,0 +1,90 @@
+# All nouns.
+# Must first be prefixed by either "true, " or "false, ".
+# If true, this noun is treated as a he/she/is.
+# If false, this noun is treated as you/multiple people.
+# This is used to replace verbs templates with proper grammar.
+
+true, a bucket of vomit
+true, a cheap suit
+true, a cheese shop
+true, a cider-drinking chav
+true, a cold sausage without mustard
+true, a cream-faced loon
+true, a dead parrot
+true, a demon's asshole
+true, a duck hunter
+true, a frightened schoolboy
+true, a grunting sow
+true, a half-eaten crumpet
+true, a hamster
+true, a horny little bunny
+true, a lazy old codger
+true, a lumberjack
+true, a muppet
+true, a piece of battered cod
+true, a platypus
+true, a public loo
+true, a red-arsed baboon
+true, a ruttish fishmonger
+true, a strange woman lying in a pond
+false, all of those animals
+true, an alien hamburger
+true, an English pig dog
+true, angry mob
+true, an ordinary pigsty
+true, Dagon
+false, defenseless young men
+false, elderberries
+true, fish 'n' chips
+true, homeless man's socks
+true, Louisiana swamp-priests
+true, Satan
+true, some bloody minger
+true, some dirty rag
+true, some dog
+true, someone insane
+true, spam
+true, Stalin's jockstrap
+true, that Thing on your doorstep
+true, the African swallow
+true, the afterlife
+false, the communists
+false, the cozzers
+false, the Deep Ones
+false, the Hell's Grannies gang
+true, the meaning of life
+false, the Nazis
+true, the Queen
+true, the Royal Family
+true, the thing you had for lunch
+true, this bloody pet shop
+true, this conversation
+true, this lake
+true, this liver
+true, this parrot
+true, this place
+true, this poor man
+true, this train
+true, vodka
+false, you
+true, your beloved auntie
+true, your country
+true, your cousin's car
+true, your face
+true, your father
+true, your favourite Bond actor
+true, your hat
+true, your house
+true, your hovercraft
+true, your husband
+true, your kettle
+true, your liver
+true, your math teacher
+true, your mother
+true, your pimply arse
+true, your seat
+true, your sense of style
+true, your sister
+false, your sins
+true, your son
+true, your wife

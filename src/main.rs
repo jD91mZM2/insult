@@ -1,6 +1,14 @@
+// All words are taken from
+// http://ohsir-the-insult-simulator.wikia.com/wiki/All_of_the_words_in_Oh...
+// Sir!!_The_Insult_Simulator
+//
+// What is referred to as "word" is actually not a word by the way.
+// It's a part of a sentence.
+
 extern crate rand;
 
 mod words;
+mod config;
 
 use rand::Rng;
 use std::io;
@@ -17,6 +25,21 @@ fn main() {
 	process::exit(code);
 }
 fn do_main() -> i32 {
+	let wordstouple = match config::make_configs() {
+		Ok(words) => words,
+		Err(err) => {
+			writeln!(io::stderr(), "Error! Could not make configs: {}", err).unwrap();
+			return 1;
+		},
+	};
+	let wordsfile = match WordsFile::parse_touple(wordstouple) {
+		Ok(words) => words,
+		Err(err) => {
+			writeln!(io::stderr(), "{}", err).unwrap();
+			return 1;
+		},
+	};
+
 	let mut rand = rand::thread_rng();
 	let mut words = Vec::new();
 
@@ -26,13 +49,13 @@ fn do_main() -> i32 {
 	while words.len() < AMOUNT as usize {
 		if num_nouns < MAX && rand.gen() {
 			num_nouns += 1;
-			words.push(gen_noun(&mut rand));
+			words.push(wordsfile.gen_noun(&mut rand));
 		} else if num_verbs < MAX && rand.gen() {
 			num_verbs += 1;
-			words.push(gen_verb(&mut rand));
+			words.push(wordsfile.gen_verb(&mut rand));
 		} else if num_nouns >= MIN && num_verbs >= MIN {
 			match rand.gen::<u8>() % 10 {
-				0 => words.push(gen_ending(&mut rand)),
+				0 => words.push(wordsfile.gen_ending(&mut rand)),
 				1 => words.push(Word::And),
 				_ => {},
 			}
@@ -54,7 +77,7 @@ fn do_main() -> i32 {
 		let word = words[i].clone();
 
 		match word {
-			Word::Noun(ref string, new_he_she_it) => {
+			Word::Noun(new_he_she_it, ref string) => {
 				if last.is_some() {
 					if let Word::And = *last.as_ref().unwrap() {
 					} else {
@@ -82,17 +105,13 @@ fn do_main() -> i32 {
 				let mut new_he_she_it = he_she_it;
 
 				if verb.has_noun() {
-					let pos = words
-						.iter()
-						.position(
-							|item| if let Word::Noun(..) = *item {
-								true
-							} else {
-								false
-							}
-						);
+					let pos = words.iter().position(|item| if let Word::Noun(..) = *item {
+						true
+					} else {
+						false
+					});
 					if let Some(pos) = pos {
-						if let Word::Noun(ref string, new_he_she_it2) = words[pos] {
+						if let Word::Noun(new_he_she_it2, ref string) = words[pos] {
 							new_he_she_it = new_he_she_it2;
 							noun = Some(string.clone());
 						} else {
@@ -121,17 +140,14 @@ fn do_main() -> i32 {
 				}
 				he_she_it = new_he_she_it;
 
-				if !words
-				        .iter()
-				        .any(
-					|item| if let Word::And = *item {
-						true
-					} else if let Word::Ending(_) = *item {
-						true
-					} else {
-						false
-					}
-				) {
+				if !words.iter().any(|item| if let Word::And = *item {
+					true
+				} else if let Word::Ending(_) = *item {
+					true
+				} else {
+					false
+				})
+				{
 					finished = true;
 					break;
 				}
