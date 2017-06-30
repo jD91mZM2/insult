@@ -17,7 +17,7 @@ if [ -z "$dest" ]; then
 	dest=~/.config/insult
 fi
 
-if [ "$merge" == "false" ]; then
+if [ "$merge" == false ]; then
 	echo "--merge not set."
 	echo "Warning: You are about to completely replace your insult config files."
 	echo -n "Continue? (y/n) "
@@ -49,7 +49,10 @@ if [ "$branch" == "master" ]; then
 	exit
 fi
 
-git stash > /dev/null # In case of any uncommited changes
+git diff-index --quiet HEAD && has_changes=false || has_changes=true
+if [ "$has_changes" == true ]; then
+	git stash > /dev/null # In case of any uncommited changes
+fi
 
 git checkout "$branch" &> /dev/null
 
@@ -62,4 +65,7 @@ cat verbs   >> "$dest/verbs"   && echo "\"verbs\"   -> \"$dest/verbs\""
 
 git checkout master &> /dev/null
 
-git stash pop > /dev/null
+
+if [ "$has_changes" == true ]; then
+	git stash pop > /dev/null
+fi
