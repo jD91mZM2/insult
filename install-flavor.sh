@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z "$1" ]; then
-	echo "./install-flavor.sh <branch> [--merge] [destination]"
+	echo "./install-flavor.sh <branch> [--merge] [config folder]"
 	exit 1
 fi
 
