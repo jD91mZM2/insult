@@ -62,7 +62,7 @@ fn do_main() -> i32 {
 		}
 	}
 
-	let mut last = None;
+	let mut completed = Vec::new();
 	let mut he_she_it = false;
 	let mut finished = false;
 	let mut space = "";
@@ -78,27 +78,45 @@ fn do_main() -> i32 {
 
 		match word {
 			Word::Noun(new_he_she_it, ref string) => {
-				if last.is_some() {
-					if let Word::And = *last.as_ref().unwrap() {
+				if let Some(last) = completed.last() {
+					if let Word::And = *last {
 					} else {
 						continue;
 					}
 				}
 
-				last = Some(word.clone());
-				words.remove(i);
+				he_she_it = {
+					if completed.len() >= 2 {
+						if let Word::And = completed[completed.len() - 1] {
+							if let Word::Noun(..) = completed[completed.len() - 2] {
+								false
+							} else {
+								new_he_she_it
+							}
+						} else {
+							new_he_she_it
+						}
+					} else {
+						new_he_she_it
+					}
+				};
+
+				completed.push(words.remove(i));
 				print!("{}{}", space, string);
 				if space.is_empty() {
 					space = " ";
 				}
-				he_she_it = new_he_she_it;
 			},
 			Word::Verb(ref verb) => {
-				if last.is_none() {
-					continue;
-				}
-				if let Word::Verb(_) = *last.as_ref().unwrap() {
-					continue;
+				{
+					let last = completed.last();
+					if completed.is_empty() {
+						continue;
+					}
+					if let Word::Noun(..) = *last.unwrap() {
+					} else {
+						continue;
+					}
 				}
 
 				let mut noun = None;
@@ -128,8 +146,7 @@ fn do_main() -> i32 {
 					}
 				}
 
-				last = Some(word.clone());
-				words.remove(i);
+				completed.push(words.remove(i));
 				print!(
 					"{}{}",
 					space,
@@ -153,10 +170,11 @@ fn do_main() -> i32 {
 				}
 			},
 			Word::Ending(ref ending) => {
+				let last = completed.last();
 				if last.is_none() {
 					continue;
 				}
-				if let Word::Verb(_) = *last.as_ref().unwrap() {
+				if let Word::Verb(_) = *last.unwrap() {
 				} else {
 					continue;
 				}
@@ -169,15 +187,17 @@ fn do_main() -> i32 {
 				break;
 			},
 			Word::And => {
-				if last.is_none() {
-					continue;
-				}
-				if let Word::And = *last.as_ref().unwrap() {
-					continue;
+				{
+					let last = completed.last();
+					if last.is_none() {
+						continue;
+					}
+					if let Word::And = *last.unwrap() {
+						continue;
+					}
 				}
 
-				last = Some(word.clone());
-				words.remove(i);
+				completed.push(words.remove(i));
 				print!("{}and", space);
 				if space.is_empty() {
 					space = " ";
