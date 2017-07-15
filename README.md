@@ -11,7 +11,7 @@ Well, me neither.
 
 You can edit this project's config files.  
 They are located in:  
- - Linux: `XDG_CONFIG_HOME` variable, defaults to `~/.config/insult/`
+ - Linux: `XDG_CONFIG_HOME` variable (defaults to `~/.config/`), in the sub-directory `insult` (so `~/.config/insult`)
  - Mac OS: `~/Application/Preferences/insult/`
  - Windows, Other: It creates an `insult/` folder in your current directory.
 
