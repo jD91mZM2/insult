@@ -1,6 +1,6 @@
 # insult
 
-`insult` is the batch/bash "utility" to insult you with a "Oh... Sir! The Insult Simulator"-like fashion!
+`insult` is the command line "utility" to insult you with a "Oh... Sir! The Insult Simulator"-like fashion!
 
 ## Example!
 
