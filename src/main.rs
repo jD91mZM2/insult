@@ -11,8 +11,6 @@ mod words;
 mod config;
 
 use rand::Rng;
-use std::io;
-use std::io::Write;
 use std::process;
 use words::*;
 
@@ -28,14 +26,14 @@ fn do_main() -> i32 {
 	let wordstouple = match config::make_configs() {
 		Ok(words) => words,
 		Err(err) => {
-			writeln!(io::stderr(), "Error! Could not make configs: {}", err).unwrap();
+			eprintln!("Error! Could not make configs: {}", err);
 			return 1;
 		},
 	};
 	let wordsfile = match WordsFile::parse_touple(wordstouple) {
 		Ok(words) => words,
 		Err(err) => {
-			writeln!(io::stderr(), "{}", err).unwrap();
+			eprintln!("{}", err);
 			return 1;
 		},
 	};
@@ -211,7 +209,7 @@ fn do_main() -> i32 {
 		0
 	} else {
 		println!();
-		writeln!(io::stderr(), "Too many tries. Stuck in infinite loop?").unwrap();
+		eprintln!("Too many tries. Stuck in infinite loop?");
 		1
 	}
 }
