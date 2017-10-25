@@ -1,7 +1,8 @@
 [package]
+authors = ["LEGOlord208 <LEGOlord208@krake.one>"]
+license = "MIT"
 name = "insult"
 version = "1.0.2"
-authors = ["LEGOlord208 <LEGOlord208@krake.one>"]
 
 [dependencies]
 rand = "0.3"
