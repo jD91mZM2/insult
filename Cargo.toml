@@ -1,7 +1,9 @@
 [package]
 authors = ["LEGOlord208 <LEGOlord208@krake.one>"]
+description = "insult is the command line \"utility\" to insult you with a \"Oh... Sir! The Insult Simulator\"-like fashion!"
 license = "MIT"
 name = "insult"
+repository = "https://github.com/jD91mZM2/insult"
 version = "1.0.2"
 
 [dependencies]
