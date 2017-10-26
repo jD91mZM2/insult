@@ -23,14 +23,14 @@ fn main() {
 	process::exit(code);
 }
 fn do_main() -> i32 {
-	let wordstouple = match config::make_configs() {
+	let wordstuple = match config::make_configs() {
 		Ok(words) => words,
 		Err(err) => {
 			eprintln!("Error! Could not make configs: {}", err);
 			return 1;
 		},
 	};
-	let wordsfile = match WordsFile::parse_touple(wordstouple) {
+	let wordsfile = match WordsFile::parse_touple(wordstuple) {
 		Ok(words) => words,
 		Err(err) => {
 			eprintln!("{}", err);
@@ -83,21 +83,19 @@ fn do_main() -> i32 {
 					}
 				}
 
-				he_she_it = {
-					if completed.len() >= 2 {
-						if let Word::And = completed[completed.len() - 1] {
-							if let Word::Noun(..) = completed[completed.len() - 2] {
-								false
-							} else {
-								new_he_she_it
-							}
-						} else {
-							new_he_she_it
-						}
-					} else {
-						new_he_she_it
-					}
-				};
+				he_she_it = if completed.len() >= 2 {
+                    if let Word::And = completed[completed.len() - 1] {
+                        if let Word::Noun(..) = completed[completed.len() - 2] {
+                            false
+                        } else {
+                            new_he_she_it
+                        }
+                    } else {
+                        new_he_she_it
+                    }
+                } else {
+                    new_he_she_it
+                };
 
 				completed.push(words.remove(i));
 				print!("{}{}", space, string);
