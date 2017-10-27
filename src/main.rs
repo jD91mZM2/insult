@@ -67,7 +67,7 @@ fn do_main() -> i32 {
         rand: rand
     };
     loop {
-        gen.expect_noun();
+        gen.expect_noun(None);
         gen.expect_verb();
 
         if gen.rand.gen() && gen.has_and() && gen.has_noun() && gen.has_verb() {
@@ -107,14 +107,19 @@ impl Generator {
     fn has_verb(&mut self) -> bool { self.words.iter().any(|item| item.is_verb()) }
     fn has_and(&mut self) -> bool { self.words.iter().any(|item| item.is_and()) }
 
-    fn expect_noun(&mut self) {
+    fn expect_noun(&mut self, he_she_it_override: Option<bool>) {
         let mut nouns = indexes!(self.words.iter_mut().enumerate().filter(|&(_, ref word)| word.is_noun())).collect();
-        let sample = self.sample(&mut nouns);
+        let mut sample = self.sample(&mut nouns);
+        if let Some(new_he_she_it) = he_she_it_override {
+            if let Word::Noun(ref mut he_she_it, _) = sample {
+                *he_she_it = new_he_she_it;
+            }
+        }
         self.completed.push(sample);
 
         if self.rand.gen() && self.has_and() && self.has_noun() {
             self.expect_and();
-            self.expect_noun();
+            self.expect_noun(Some(false));
         }
     }
     fn expect_ending(&mut self) {
@@ -132,7 +137,7 @@ impl Generator {
         self.completed.push(verb);
         if noun {
             if self.has_noun() {
-                self.expect_noun();
+                self.expect_noun(None);
             } else {
                 self.completed.push(Word::Unfinished);
             }
@@ -145,7 +150,6 @@ impl Generator {
 
     fn to_string(&self) -> String {
         let mut he_she_it = false;
-        let mut was_and = false;
         // 128 is just a guess.
         self.completed.iter().fold(String::with_capacity(128), |mut acc, word| {
             if word.is_ending() {
@@ -154,9 +158,10 @@ impl Generator {
             if !acc.is_empty() && !word.is_unfinished() {
                 acc.push(' ');
             }
+
             match *word {
                 Word::Noun(new_he_she_it, ref noun) => {
-                    he_she_it = new_he_she_it && !was_and;
+                    he_she_it = new_he_she_it;
                     acc.push_str(noun.as_str());
                 },
                 Word::Verb(ref verb) => {
@@ -166,8 +171,7 @@ impl Generator {
                 Word::And => acc.push_str("and"),
                 Word::Unfinished => acc.push_str("... eh... uhnn...")
             }
-            if was_and { was_and = false; }
-            if word.is_and() { was_and = true; }
+
             acc
         })
     }
