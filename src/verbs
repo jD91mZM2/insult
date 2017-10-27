@@ -1,122 +1,122 @@
 # All verbs.
+# true means it expects a noun after the verb.
 # [has/have] gets replaced by either "has" or "have".
 # [is/are] gets replaced by either "is" or "are".
 # [was/were] gets replaced by either "was" or "were".
 # (s) gets replaced by either nothing or 's'.
-# (noun) gets replaced by a word from the nouns file.
 
-[is/are] (noun)
-[is/are] afraid of my minigun
-[is/are] an ill-nurtured whey face
-[is/are] an old bugger
-[is/are] an organ in your abdomen
-[is/are] deceased
-[is/are] dull and ugly
-[is/are] full of eels
-[is/are] getting fat
-[is/are] interested in photography
-[is/are] minging
-[is/are] no more
-[is/are] not a part of Europe
-[is/are] not interesting
-[is/are] not migratory
-[is/are] not my creation
-[is/are] not Serious
-[is/are] old
-[is/are] racist
-[is/are] rather plain
-[is/are] rude
-[is/are] scratched
-[is/are] silly
-[is/are] stone dead
-[is/are] very naughty
-[is/are] vile
-[is/are] where you can sit
-[is/are] worthless
-[was/were] (noun)
-[was/were] born in (noun)
-[was/were] burnt like a witch
-[was/were] defeated by (noun)
-[was/were] in jail
-[was/were] owned by (noun)
-[was/were] teabagged by (noun)
-[has/have] a steaming romp with (noun)
-[has/have] an unsightly face
-[has/have] bad breath
-[has/have] bum cancer
-[has/have] no life experience
-[has/have] not finished puberty
-[has/have] not so much brain as ear wax
-[has/have] only local multiplayer
-[has/have] tiny feet
-[has/have] worse hair than (noun)
-act(s) like (noun)
-admire(s) pictures of (noun)
-ate Yul Brynner with (noun)
-belong(s) in one of those cages
-bother(s) me
-bring(s) insults to a sword fight
-can be found in Pokémon GO
-can lick my lead
-can't dance
-can't exercise because of (noun)
-can't hold liquor
-can't tie a tie
-change(s) into (noun)
-dance(s) like (noun)
-died because of (noun)
-do(es)n't like (noun)
-do(es)n't own a colour telly
-donated organs for (noun)
-eat(s) only non-gluten lembas
-enjoyed Batman v Superman
-fart(s) in your general direction
-farted on (noun)
-give(s) a butcher's hook at (noun)
-go(es) around murdering people
-had too much of Fungi from Yuggoth
-hide(s) in this shrubbery
-like(s) to flash in the park
-look(s) like (noun)
-look(s) like a sad lemur
-made a poor deal with (noun)
-make(s) fun of the Pope
-make(s) me sick
-move(s) like a pregnant yak
-must be fun at parties
-need(s) a liver transplant
-never heard the call of Cthulhu
-never partied in Moscow
-never watched Star Wars
-play(s) hidden object games
-pose(s) nude for (noun)
-pre-ordered No Man's Sky
-probably murdered (noun)
-put(s) on granny's clothing
-read(s) Necronomicon with (noun)
-secretly adore(s) (noun)
-send(s) you warmest pots and dishes
-sit(s) next to (noun)
-smell(s) of (noun)
-stalked (noun)
-still use(s) Windows Vista
-suck(s) at Overwatch
-support(s) (noun)
-swallowed a chewing gum
-talk(s) to strangers
-taste(s) like (noun)
-tell(s) dirty jokes at funerals
-used to steal from orphans
-vomit(s) after drinking vodka
-walk(s) silly
-wants some Wang
-wanted to be (noun)
-wear(s) second-hand clothes
-went to the Mountain of Madness
-will always be alone
-will be chopped to bits
-will be damned for eternity
-will murder for a seat reservation
-will reincarnate as a pigeon
-will soon kick the bucket
-worked with (noun)
+true, [is/are]
+false, [is/are] afraid of my minigun
+false, [is/are] an ill-nurtured whey face
+false, [is/are] an old bugger
+false, [is/are] an organ in your abdomen
+false, [is/are] deceased
+false, [is/are] dull and ugly
+false, [is/are] full of eels
+false, [is/are] getting fat
+false, [is/are] interested in photography
+false, [is/are] minging
+false, [is/are] no more
+false, [is/are] not a part of Europe
+false, [is/are] not interesting
+false, [is/are] not migratory
+false, [is/are] not my creation
+false, [is/are] not Serious
+false, [is/are] old
+false, [is/are] racist
+false, [is/are] rather plain
+false, [is/are] rude
+false, [is/are] scratched
+false, [is/are] silly
+false, [is/are] stone dead
+false, [is/are] very naughty
+false, [is/are] vile
+false, [is/are] where you can sit
+false, [is/are] worthless
+true, [was/were]
+true, [was/were] born in
+false, [was/were] burnt like a witch
+true, [was/were] defeated by
+false, [was/were] in jail
+true, [was/were] owned by
+true, [was/were] teabagged by
+true, [has/have] a steaming romp with
+false, [has/have] an unsightly face
+false, [has/have] bad breath
+false, [has/have] bum cancer
+false, [has/have] no life experience
+false, [has/have] not finished puberty
+false, [has/have] not so much brain as ear wax
+false, [has/have] only local multiplayer
+false, [has/have] tiny feet
+true, [has/have] worse hair than
+true, act(s) like
+true, admire(s) pictures of
+true, ate Yul Brynner with
+false, belong(s) in one of those cages
+false, bother(s) me
+false, bring(s) insults to a sword fight
+false, can be found in Pokémon GO
+false, can lick my lead
+false, can't dance
+true, can't exercise because of
+false, can't hold liquor
+false, can't tie a tie
+true, change(s) into
+true, dance(s) like
+true, died because of
+true, do(es)n't like
+false, do(es)n't own a colour telly
+true, donated organs for
+false, eat(s) only non-gluten lembas
+false, enjoyed Batman v Superman
+false, fart(s) in your general direction
+true, farted on
+true, give(s) a butcher's hook at
+false, go(es) around murdering people
+false, had too much of Fungi from Yuggoth
+false, hide(s) in this shrubbery
+false, like(s) to flash in the park
+true, look(s) like
+false, look(s) like a sad lemur
+true, made a poor deal with
+false, make(s) fun of the Pope
+false, make(s) me sick
+false, move(s) like a pregnant yak
+false, must be fun at parties
+false, need(s) a liver transplant
+false, never heard the call of Cthulhu
+false, never partied in Moscow
+false, never watched Star Wars
+false, play(s) hidden object games
+true, pose(s) nude for
+false, pre-ordered No Man's Sky
+true, probably murdered
+false, put(s) on granny's clothing
+true, read(s) Necronomicon with
+true, secretly adore(s)
+false, send(s) you warmest pots and dishes
+true, sit(s) next to
+true, smell(s) of
+true, stalked
+false, still use(s) Windows Vista
+false, suck(s) at Overwatch
+true, support(s)
+false, swallowed a chewing gum
+false, talk(s) to strangers
+true, taste(s) like
+false, tell(s) dirty jokes at funerals
+false, used to steal from orphans
+false, vomit(s) after drinking vodka
+false, walk(s) silly
+false, wants some Wang
+true, wanted to be
+false, wear(s) second-hand clothes
+false, went to the Mountain of Madness
+false, will always be alone
+false, will be chopped to bits
+false, will be damned for eternity
+false, will murder for a seat reservation
+false, will reincarnate as a pigeon
+false, will soon kick the bucket
+true, worked with

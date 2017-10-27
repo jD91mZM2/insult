@@ -3,7 +3,7 @@ use std::error::Error;
 use std::fmt;
 use std::fs::{self, File};
 use std::io::{BufReader, Read, Write};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 #[derive(Debug)]
 struct NoHomeDir;
@@ -21,25 +21,25 @@ pub fn make_configs() -> Result<(String, String, String), Box<Error>> {
 	fs::create_dir_all(&folder)?;
 
 	let mut contents = (String::new(), String::new(), String::new());
-	macro_rules! create_file {
-		($name:expr, $index:tt) => {
-			let path = folder.join($name);
-			if path.exists() {
-				let file = File::open(path)?;
-				let mut reader = BufReader::new(file);
-				reader.read_to_string(&mut contents.$index)?;
-			} else {
-				let mut file = File::create(path)?;
-				file.write_all(include_bytes!($name))?;
-				contents.$index = include_str!($name).to_string();
-			}
-		}
-	}
-	create_file!("nouns", 0);
-	create_file!("endings", 1);
-	create_file!("verbs", 2);
+
+	create_file(&folder, "nouns", include_str!("nouns"),     &mut contents.0)?;
+	create_file(&folder, "endings", include_str!("endings"), &mut contents.1)?;
+	create_file(&folder, "verbs", include_str!("verbs"),     &mut contents.2)?;
 
 	Ok(contents)
+}
+fn create_file(folder: &Path, name: &'static str, included_str: &str, content: &mut String) -> Result<(), Box<Error>> {
+    let path = folder.join(name);
+    if path.exists() {
+        let file = File::open(path)?;
+        let mut reader = BufReader::new(file);
+        reader.read_to_string(content)?;
+    } else {
+        let mut file = File::create(path)?;
+        file.write_all(included_str.as_bytes())?;
+        *content = included_str.to_string();
+    }
+    Ok(())
 }
 fn get_config_folder() -> Result<PathBuf, Box<Error>> {
 	if cfg!(target_os = "linux") {

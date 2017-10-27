@@ -3,139 +3,145 @@ use std::ascii::AsciiExt;
 use std::error::Error;
 use std::fmt;
 
-#[derive(Debug, Clone)]
-pub struct Verb(String);
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Verb(pub bool, pub String);
 impl Verb {
-	pub fn has_noun(&self) -> bool { self.0.contains("(noun)") }
-	pub fn gen(&self, he_she_it: bool, noun: Option<&str>) -> String {
-		// Consider making custom replace function for efficiency
+    pub fn gen(&self, he_she_it: bool) -> String {
+        // Consider making custom replace function for efficiency
 
-		let mut string = if he_she_it {
-			self.0
-				.replace("[is/are]", "is")
-				.replace("[has/have]", "has")
-				.replace("[was/were]", "was")
-				.replace("(s)", "s")
-				.replace("(es)", "es")
-		} else {
-			self.0
-				.replace("[is/are]", "are")
-				.replace("[has/have]", "have")
-				.replace("[was/were]", "were")
-				.replace("(s)", "")
-				.replace("(es)", "")
-		};
-
-		if let Some(noun) = noun {
-			string = string.replace("(noun)", noun);
-		}
-		string
-	}
+        let string = if he_she_it {
+            self.1
+                .replace("[is/are]", "is")
+                .replace("[has/have]", "has")
+                .replace("[was/were]", "was")
+                .replace("(s)", "s")
+                .replace("(es)", "es")
+        } else {
+            self.1
+                .replace("[is/are]", "are")
+                .replace("[has/have]", "have")
+                .replace("[was/were]", "were")
+                .replace("(s)", "")
+                .replace("(es)", "")
+        };
+        string
+    }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Word {
-	Noun(bool, String),
-	Ending(String),
-	Verb(Verb),
-	And
+    Noun(bool, String),
+    Ending(String),
+    Verb(Verb),
+    And,
+    Unfinished
+}
+
+impl Word {
+    pub fn is_noun(&self) -> bool {
+        if let Word::Noun(..) = *self {
+            return true;
+        }
+        false
+    }
+    pub fn is_ending(&self) -> bool {
+        if let Word::Ending(_) = *self {
+            return true;
+        }
+        false
+    }
+    pub fn is_verb(&self) -> bool {
+        if let Word::Verb(_) = *self {
+            return true;
+        }
+        false
+    }
+    pub fn is_and(&self) -> bool {
+        if let Word::And = *self {
+            return true;
+        }
+        false
+    }
 }
 
 #[derive(Debug)]
 pub enum WordsFileCorrupt {
-	NounsFileCorrupt(usize),
-	EmptyFile(&'static str)
+    Corrupt(&'static str, usize),
+    EmptyFile(&'static str)
 }
 
 impl Error for WordsFileCorrupt {
-	fn description(&self) -> &str { "Corrupt words file" }
+    fn description(&self) -> &str { "Corrupt words file" }
 }
 impl fmt::Display for WordsFileCorrupt {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		match *self {
-			WordsFileCorrupt::NounsFileCorrupt(i) => {
-				write!(
-					f,
-					"Corrupt words file! Line {} in nouns doesn't have boolean prefix.",
-					i
-				)
-			},
-			WordsFileCorrupt::EmptyFile(name) => write!(f, "Corrupt words file! File {} is empty!", name),
-		}
-	}
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            WordsFileCorrupt::Corrupt(file, i) => {
+                write!(f, "Corrupt words file! Line {} in {} doesn't have boolean prefix.", file, i)
+            },
+            WordsFileCorrupt::EmptyFile(name) => write!(f, "Corrupt words file! File {} is empty!", name),
+        }
+    }
 }
 
 pub struct WordsFile {
-	nouns: Vec<(bool, String)>,
-	endings: Vec<String>,
-	verbs: Vec<String>
+    nouns:   Vec<(bool, String)>,
+    endings: Vec<(bool, String)>,
+    verbs:   Vec<(bool, String)>
 }
 impl WordsFile {
-	pub fn parse_touple(touple: (String, String, String)) -> Result<WordsFile, WordsFileCorrupt> {
-		// Let's not worry about reserving since it prevents frequent reallocations
-		// anyways.
-		let mut nouns = Vec::new();
-		for (i, line) in touple.0.lines().enumerate() {
-			if line.is_empty() || line.starts_with("#") {
-				continue;
-			}
+    pub fn parse_tuple(tuple: (String, String, String)) -> Result<WordsFile, WordsFileCorrupt> {
+        // Let's not worry about reserving since it prevents frequent reallocations
+        // anyways.
 
-			let parts: Vec<&str> = line.splitn(2, ", ").collect();
-			if parts.len() != 2 {
-				return Err(WordsFileCorrupt::NounsFileCorrupt(i));
-			}
+        let nouns   = WordsFile::parse_file("endings", &tuple.0)?;
+        let endings = WordsFile::parse_file("endings", &tuple.1)?;
+        let verbs   = WordsFile::parse_file("verbs",   &tuple.2)?;
 
-			if parts[0].eq_ignore_ascii_case("true") {
-				nouns.push((true, parts[1].to_string()));
-			} else if parts[0].eq_ignore_ascii_case("false") {
-				nouns.push((false, parts[1].to_string()));
-			} else {
-				return Err(WordsFileCorrupt::NounsFileCorrupt(i));
-			}
-		}
+        Ok(WordsFile {
+            nouns: nouns,
+            endings: endings,
+            verbs: verbs
+        })
+    }
+    fn parse_file(name: &'static str, content: &str) -> Result<Vec<(bool, String)>, WordsFileCorrupt> {
+        let mut lines = Vec::new();
+        for (i, line) in content.lines().enumerate() {
+            if line.is_empty() || line.starts_with("#") {
+                continue;
+            }
+            let mut parts = line.splitn(2, ",").map(|item| item.trim());
+            let line = match (parts.next(), parts.next()) {
+                (Some(flag), Some(line)) => (if flag.eq_ignore_ascii_case("true") {
+                        true
+                    } else if flag.eq_ignore_ascii_case("false") {
+                        false
+                    } else {
+                        return Err(WordsFileCorrupt::Corrupt(name, i))
+                    }, line.to_string()),
+                (_, _) => {
+                    return Err(WordsFileCorrupt::Corrupt(name, i));
+                }
+            };
+            lines.push(line);
+        }
 
-		if nouns.is_empty() {
-			return Err(WordsFileCorrupt::EmptyFile("nouns"));
-		}
+        if lines.is_empty() {
+            return Err(WordsFileCorrupt::EmptyFile(name));
+        }
+        Ok(lines)
+    }
 
-		macro_rules! parse_string {
-			($index:tt, $name:expr) => {
-				{
-					let mut lines = Vec::new();
-					for line in touple.$index.lines() {
-						if line.is_empty() || line.starts_with("#") {
-							continue;
-						}
-						lines.push(line.to_string());
-					}
-
-					if lines.is_empty() {
-						return Err(WordsFileCorrupt::EmptyFile($name));
-					}
-					lines
-				}
-			}
-		}
-		let endings = parse_string!(1, "endings");
-		let verbs = parse_string!(2, "verbs");
-
-		Ok(WordsFile {
-			nouns: nouns,
-			endings: endings,
-			verbs: verbs
-		})
-	}
-
-	pub fn gen_noun(&self, rand: &mut ThreadRng) -> Word {
-		let &(he_she_it, ref word) = &self.nouns[rand.gen::<usize>() % self.nouns.len()];
-		Word::Noun(he_she_it, word.clone())
-	}
-	pub fn gen_ending(&self, rand: &mut ThreadRng) -> Word {
-		let word = &self.endings[rand.gen::<usize>() % self.endings.len()];
-		Word::Ending(word.clone())
-	}
-	pub fn gen_verb(&self, rand: &mut ThreadRng) -> Word {
-		let word = &self.verbs[rand.gen::<usize>() % self.verbs.len()];
-		Word::Verb(Verb(word.clone()))
-	}
+    pub fn gen_noun(&self, rand: &mut ThreadRng) -> Word {
+        let &(he_she_it, ref word) = &self.nouns[rand.gen::<usize>() % self.nouns.len()];
+        Word::Noun(he_she_it, word.clone())
+    }
+    pub fn gen_ending(&self, rand: &mut ThreadRng) -> Word {
+        let &(_, ref word) = &self.endings[rand.gen::<usize>() % self.endings.len()];
+        Word::Ending(word.clone())
+    }
+    pub fn gen_verb(&self, rand: &mut ThreadRng) -> Word {
+        let &(noun, ref word) = &self.verbs[rand.gen::<usize>() % self.verbs.len()];
+        Word::Verb(Verb(noun, word.clone()))
+    }
 }

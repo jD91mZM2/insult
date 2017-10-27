@@ -10,11 +10,11 @@ extern crate rand;
 mod words;
 mod config;
 
-use rand::Rng;
+use rand::{ThreadRng, Rng};
 use std::process;
 use words::*;
 
-const AMOUNT: u8 = 10;
+const AMOUNT: u8 = 9 + 2*2; // Board + Tea * 2
 const MIN: u8 = 3;
 const MAX: u8 = 5;
 
@@ -30,7 +30,7 @@ fn do_main() -> i32 {
 			return 1;
 		},
 	};
-	let wordsfile = match WordsFile::parse_touple(wordstuple) {
+	let wordsfile = match WordsFile::parse_tuple(wordstuple) {
 		Ok(words) => words,
 		Err(err) => {
 			eprintln!("{}", err);
@@ -60,154 +60,115 @@ fn do_main() -> i32 {
 		}
 	}
 
-	let mut completed = Vec::new();
-	let mut he_she_it = false;
-	let mut finished = false;
-	let mut space = "";
+    let mut gen = Generator {
+        completed: Vec::new(),
+        words: words,
 
-	for _ in 0..100 {
-		if words.is_empty() {
-			finished = true;
-			break;
-		}
+        rand: rand
+    };
+    loop {
+        gen.expect_noun();
+        gen.expect_verb();
 
-		let mut i = rand.gen::<usize>() % words.len();
-		let word = words[i].clone();
+        if gen.rand.gen() && gen.has_and() && gen.has_noun() && gen.has_verb() {
+            gen.expect_and();
+            continue;
+        }
+        break;
+    }
+    if gen.rand.gen() && gen.has_ending() {
+        gen.expect_ending();
+    }
 
-		match word {
-			Word::Noun(new_he_she_it, ref string) => {
-				if let Some(last) = completed.last() {
-					if let Word::And = *last {
-					} else {
-						continue;
-					}
-				}
+    println!("{}", gen.to_string());
+    return 0;
+}
 
-				he_she_it = if completed.len() >= 2 {
-                    if let Word::And = completed[completed.len() - 1] {
-                        if let Word::Noun(..) = completed[completed.len() - 2] {
-                            false
-                        } else {
-                            new_he_she_it
-                        }
-                    } else {
-                        new_he_she_it
-                    }
-                } else {
-                    new_he_she_it
-                };
+struct Generator {
+    completed: Vec<Word>,
+    words: Vec<Word>,
 
-				completed.push(words.remove(i));
-				print!("{}{}", space, string);
-				if space.is_empty() {
-					space = " ";
-				}
-			},
-			Word::Verb(ref verb) => {
-				{
-					let last = completed.last();
-					if completed.is_empty() {
-						continue;
-					}
-					if let Word::Noun(..) = *last.unwrap() {
-					} else {
-						continue;
-					}
-				}
+    rand: ThreadRng
+}
+// Because specifying function return type is barely possible
+// and `-> impl Iterator {` hasn't been stabilized yet
+macro_rules! indexes {
+    ($iter:expr) => {
+        $iter.map(|item| item.0)
+    }
+}
+impl Generator {
+    fn sample(&mut self, words: &mut Vec<usize>) -> Word {
+        assert!(!words.is_empty());
+        self.words.remove(words[self.rand.gen::<usize>() % words.len()])
+    }
+    fn has_noun(&mut self) -> bool { self.words.iter().any(|item| item.is_noun()) }
+    fn has_ending(&mut self) -> bool { self.words.iter().any(|item| item.is_ending()) }
+    fn has_verb(&mut self) -> bool { self.words.iter().any(|item| item.is_verb()) }
+    fn has_and(&mut self) -> bool { self.words.iter().any(|item| item.is_and()) }
 
-				let mut noun = None;
-				let mut new_he_she_it = he_she_it;
+    fn expect_noun(&mut self) {
+        let mut nouns = indexes!(self.words.iter_mut().enumerate().filter(|&(_, ref word)| word.is_noun())).collect();
+        let sample = self.sample(&mut nouns);
+        self.completed.push(sample);
 
-				if verb.has_noun() {
-					let pos = words.iter().position(|item| if let Word::Noun(..) = *item {
-						true
-					} else {
-						false
-					});
-					if let Some(pos) = pos {
-						if let Word::Noun(new_he_she_it2, ref string) = words[pos] {
-							new_he_she_it = new_he_she_it2;
-							noun = Some(string.clone());
-						} else {
-							unreachable!();
-						}
-						words.remove(pos);
-						if pos < i {
-							// Uh oh! We wouldn't want words.remove(i)
-							// to use an outdated index!
-							i -= 1;
-						}
-					} else {
-						continue;
-					}
-				}
+        if self.rand.gen() && self.has_and() && self.has_noun() {
+            self.expect_and();
+            self.expect_noun();
+        }
+    }
+    fn expect_ending(&mut self) {
+        let mut endings = indexes!(self.words.iter_mut().enumerate().filter(|&(_, ref word)| word.is_ending())).collect();
+        let sample = self.sample(&mut endings);
+        self.completed.push(sample);
+    }
+    fn expect_verb(&mut self) {
+        let mut verbs = indexes!(self.words.iter_mut().enumerate().filter(|&(_, ref word)| word.is_verb())).collect();
+        let verb = self.sample(&mut verbs);
+        let noun = match verb {
+            Word::Verb(Verb(noun, _)) => noun,
+            _ => unreachable!()
+        };
+        self.completed.push(verb);
+        if noun {
+            if self.has_noun() {
+                self.expect_noun();
+            } else {
+                self.completed.push(Word::Unfinished);
+            }
+        }
+    }
+    fn expect_and(&mut self) {
+        let pos = self.words.iter().position(|word| word.is_and());
+        self.completed.push(self.words.remove(pos.unwrap()));
+    }
 
-				completed.push(words.remove(i));
-				print!(
-					"{}{}",
-					space,
-					verb.gen(he_she_it, noun.as_ref().map(|string| string.as_str()))
-				);
-				if space.is_empty() {
-					space = " ";
-				}
-				he_she_it = new_he_she_it;
-
-				if !words.iter().any(|item| if let Word::And = *item {
-					true
-				} else if let Word::Ending(_) = *item {
-					true
-				} else {
-					false
-				})
-				{
-					finished = true;
-					break;
-				}
-			},
-			Word::Ending(ref ending) => {
-				let last = completed.last();
-				if last.is_none() {
-					continue;
-				}
-				if let Word::Verb(_) = *last.unwrap() {
-				} else {
-					continue;
-				}
-				if rand.gen() {
-					continue;
-				}
-
-				finished = true;
-				print!(", {}", ending);
-				break;
-			},
-			Word::And => {
-				{
-					let last = completed.last();
-					if last.is_none() {
-						continue;
-					}
-					if let Word::And = *last.unwrap() {
-						continue;
-					}
-				}
-
-				completed.push(words.remove(i));
-				print!("{}and", space);
-				if space.is_empty() {
-					space = " ";
-				}
-			},
-		}
-	}
-
-	if finished {
-		println!();
-		0
-	} else {
-		println!();
-		eprintln!("Too many tries. Stuck in infinite loop?");
-		1
-	}
+    fn to_string(&self) -> String {
+        let mut he_she_it = false;
+        let mut was_and = false;
+        // 128 is just a guess.
+        self.completed.iter().fold(String::with_capacity(128), |mut acc, word| {
+            if word.is_ending() {
+                acc.push(',');
+            }
+            if !acc.is_empty() {
+                acc.push(' ');
+            }
+            match *word {
+                Word::Noun(new_he_she_it, ref noun) => {
+                    he_she_it = new_he_she_it && !was_and;
+                    acc.push_str(noun.as_str());
+                },
+                Word::Verb(ref verb) => {
+                    acc.push_str(&verb.gen(he_she_it));
+                },
+                Word::Ending(ref ending) => acc.push_str(ending.as_str()),
+                Word::And => acc.push_str("and"),
+                Word::Unfinished => acc.push_str("... eh... uhnn...")
+            }
+            if was_and { was_and = false; }
+            if word.is_and() { was_and = true; }
+            acc
+        })
+    }
 }
