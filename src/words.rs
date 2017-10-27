@@ -83,7 +83,7 @@ impl fmt::Display for WordsFileCorrupt {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
             WordsFileCorrupt::Corrupt(file, i) => {
-                write!(f, "Corrupt words file! Line {} in {} doesn't have boolean prefix.", file, i)
+                write!(f, "Corrupt words file! Line {} in \"{}\" doesn't have boolean prefix.", i, file)
             },
             WordsFileCorrupt::EmptyFile(name) => write!(f, "Corrupt words file! File {} is empty!", name),
         }
