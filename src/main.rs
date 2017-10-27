@@ -19,46 +19,46 @@ const MIN: u8 = 3;
 const MAX: u8 = 5;
 
 fn main() {
-	let code = do_main();
-	process::exit(code);
+    let code = do_main();
+    process::exit(code);
 }
 fn do_main() -> i32 {
-	let wordstuple = match config::make_configs() {
-		Ok(words) => words,
-		Err(err) => {
-			eprintln!("Error! Could not make configs: {}", err);
-			return 1;
-		},
-	};
-	let wordsfile = match WordsFile::parse_tuple(wordstuple) {
-		Ok(words) => words,
-		Err(err) => {
-			eprintln!("{}", err);
-			return 1;
-		},
-	};
+    let wordstuple = match config::make_configs() {
+        Ok(words) => words,
+        Err(err) => {
+            eprintln!("Error! Could not make configs: {}", err);
+            return 1;
+        },
+    };
+    let wordsfile = match WordsFile::parse_tuple(wordstuple) {
+        Ok(words) => words,
+        Err(err) => {
+            eprintln!("{}", err);
+            return 1;
+        },
+    };
 
-	let mut rand = rand::thread_rng();
-	let mut words = Vec::new();
+    let mut rand = rand::thread_rng();
+    let mut words = Vec::new();
 
-	let mut num_nouns = 0;
-	let mut num_verbs = 0;
+    let mut num_nouns = 0;
+    let mut num_verbs = 0;
 
-	while words.len() < AMOUNT as usize {
-		if num_nouns < MAX && rand.gen() {
-			num_nouns += 1;
-			words.push(wordsfile.gen_noun(&mut rand));
-		} else if num_verbs < MAX && rand.gen() {
-			num_verbs += 1;
-			words.push(wordsfile.gen_verb(&mut rand));
-		} else if num_nouns >= MIN && num_verbs >= MIN {
-			match rand.gen::<u8>() % 10 {
-				0 => words.push(wordsfile.gen_ending(&mut rand)),
-				1 => words.push(Word::And),
-				_ => {},
-			}
-		}
-	}
+    while words.len() < AMOUNT as usize {
+        if num_nouns < MAX && rand.gen() {
+            num_nouns += 1;
+            words.push(wordsfile.gen_noun(&mut rand));
+        } else if num_verbs < MAX && rand.gen() {
+            num_verbs += 1;
+            words.push(wordsfile.gen_verb(&mut rand));
+        } else if num_nouns >= MIN && num_verbs >= MIN {
+            match rand.gen::<u8>() % 10 {
+                0 => words.push(wordsfile.gen_ending(&mut rand)),
+                1 => words.push(Word::And),
+                _ => {},
+            }
+        }
+    }
 
     let mut gen = Generator {
         completed: Vec::new(),
