@@ -62,6 +62,12 @@ impl Word {
         }
         false
     }
+    pub fn is_unfinished(&self) -> bool {
+        if let Word::Unfinished = *self {
+            return true;
+        }
+        false
+    }
 }
 
 #[derive(Debug)]

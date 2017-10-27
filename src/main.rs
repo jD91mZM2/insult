@@ -151,7 +151,7 @@ impl Generator {
             if word.is_ending() {
                 acc.push(',');
             }
-            if !acc.is_empty() {
+            if !acc.is_empty() && !word.is_unfinished() {
                 acc.push(' ');
             }
             match *word {
