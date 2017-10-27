@@ -4,7 +4,7 @@ description = "insult is the command line \"utility\" to insult you with a \"Oh.
 license = "MIT"
 name = "insult"
 repository = "https://github.com/jD91mZM2/insult"
-version = "1.0.2"
+version = "1.1.0"
 
 [dependencies]
 rand = "0.3"
