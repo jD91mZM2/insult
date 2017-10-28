@@ -179,8 +179,10 @@ impl Generator {
         });
 
         let last = self.completed.last();
-        if last.is_some() && !last.unwrap().is_ending() {
-            string.push('!');
+        if let Some(last) = last {
+            if !last.is_ending() && !last.is_unfinished() {
+                string.push('!');
+            }
         }
 
         string
