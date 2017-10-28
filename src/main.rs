@@ -66,12 +66,15 @@ fn do_main() -> i32 {
 
         rand: rand
     };
+    gen.expect_noun(None);
     loop {
-        gen.expect_noun(None);
         gen.expect_verb();
 
-        if gen.rand.gen() && gen.has_and() && gen.has_noun() && gen.has_verb() {
+        if gen.rand.gen() && gen.has_and() && gen.has_verb() {
             gen.expect_and();
+            if gen.rand.gen() && gen.has_noun() {
+                gen.expect_noun(None);
+            }
             continue;
         }
         break;
@@ -151,7 +154,7 @@ impl Generator {
     fn to_string(&self) -> String {
         let mut he_she_it = false;
         // 128 is just a guess.
-        self.completed.iter().fold(String::with_capacity(128), |mut acc, word| {
+        let mut string = self.completed.iter().fold(String::with_capacity(128), |mut acc, word| {
             if word.is_ending() {
                 acc.push(',');
             }
@@ -173,6 +176,13 @@ impl Generator {
             }
 
             acc
-        })
+        });
+
+        let last = self.completed.last();
+        if last.is_some() && !last.unwrap().is_ending() {
+            string.push('!');
+        }
+
+        string
     }
 }
