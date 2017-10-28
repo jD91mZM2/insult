@@ -7,7 +7,7 @@
 Did you know that `the Royal Family can't exercise because of your sister` or that `your wife probably murdered your husband`?  
 Well, me neither.
 
-## Flavors!
+## Configs!
 
 You can edit this project's config files.  
 They are located in:  
@@ -15,12 +15,9 @@ They are located in:
  - Mac OS: `~/Application/Preferences/insult/`
  - Windows, Other: It creates an `insult/` folder in your current directory.
 
-Well go ahead, check out this project's [branches](https://github.com/legolord208/insult/branches) if you want some sample configs.
+# Installing!
 
-You can also use the `install-flavor.sh` script that is ported with this application to install a flavor easily.  
+The easiest way to install is with cargo:  
 ```
-./install-flavor.sh <branch> [destination]
+cargo install insult
 ```
-
-destination is the config folder. Defaulted to `~/.config/insult`, so on a not heavily-modified GNU/Linux it'll probably work out of the box.  
-Install flavor branch "master" to disable.
