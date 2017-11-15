@@ -1,4 +1,4 @@
-# insult
+# insult - The Oh...Sir!-like insult generator
 
 `insult` is the command line "utility" to insult you with a "Oh... Sir! The Insult Simulator"-like fashion!
 
