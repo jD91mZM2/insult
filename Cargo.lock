@@ -1,4 +1,4 @@
-[root]
+[[package]]
 name = "insult"
 version = "1.1.4"
 dependencies = [

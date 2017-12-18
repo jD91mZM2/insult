@@ -103,7 +103,7 @@ macro_rules! indexes {
 impl Generator {
     fn sample(&mut self, words: &mut Vec<usize>) -> Word {
         assert!(!words.is_empty());
-        self.words.remove(words[self.rand.gen::<usize>() % words.len()])
+        self.words.remove(*self.rand.choose(&words).unwrap())
     }
     fn has_noun(&mut self) -> bool { self.words.iter().any(|item| item.is_noun()) }
     fn has_ending(&mut self) -> bool { self.words.iter().any(|item| item.is_ending()) }
