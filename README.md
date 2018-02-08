@@ -14,7 +14,7 @@ Well, me neither.
 You can edit this project's config files.  
 They follow the XDG standard, so by default they're in `~/.config/insult`.
 
-# Installing!
+## Installing!
 
 The easiest way to install is with cargo:  
 ```
@@ -28,7 +28,7 @@ This means you can generate your own insults from your own applications!
 
 Example:
 
-```
+```Rust
 let words = WordsFile {
     nouns: include_str!("nouns"),
     endings: include_str!("endings"),
