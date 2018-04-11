@@ -7,6 +7,7 @@
 
 #[macro_use] extern crate failure;
 extern crate insult;
+extern crate rand;
 extern crate xdg;
 
 use failure::Error;
@@ -69,7 +70,7 @@ fn main() {
     let code = if let Err(err) = do_main() {
         eprintln!("{}", err);
         1
-    } else {0};
+    } else { 0 };
     process::exit(code);
 }
 fn do_main() -> Result<(), Error> {
@@ -86,6 +87,6 @@ fn do_main() -> Result<(), Error> {
         endings: read_file!("endings"),
         verbs: read_file!("verbs")
     };
-    println!("{}", words.generate());
+    println!("{}", words.generate(rand::thread_rng()));
     Ok(())
 }

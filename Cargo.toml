@@ -10,7 +10,7 @@ name = "insult"
 path = "src/main.rs"
 
 [dependencies]
-rand = "0.3"
+rand = "0.4.2"
 
 # These are only binary dependencies.
 # See https://github.com/rust-lang/cargo/issues/1982.

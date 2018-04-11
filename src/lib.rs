@@ -7,7 +7,7 @@
 
 extern crate rand;
 
-use rand::{ThreadRng, Rng};
+use rand::Rng;
 use std::fmt::{self, Display};
 
 mod words;
@@ -24,20 +24,19 @@ pub struct WordsFile {
     pub verbs:   Vec<(bool, String)>
 }
 impl WordsFile {
-    pub fn gen_noun(&self, rand: &mut ThreadRng) -> Word {
+    pub fn gen_noun<R: Rng>(&self, rand: &mut R) -> Word {
         let &(he_she_it, ref word) = &self.nouns[rand.gen::<usize>() % self.nouns.len()];
         Word::Noun(he_she_it, word.clone())
     }
-    pub fn gen_ending(&self, rand: &mut ThreadRng) -> Word {
+    pub fn gen_ending<R: Rng>(&self, rand: &mut R) -> Word {
         let &(_, ref word) = &self.endings[rand.gen::<usize>() % self.endings.len()];
         Word::Ending(word.clone())
     }
-    pub fn gen_verb(&self, rand: &mut ThreadRng) -> Word {
+    pub fn gen_verb<R: Rng>(&self, rand: &mut R) -> Word {
         let &(noun, ref word) = &self.verbs[rand.gen::<usize>() % self.verbs.len()];
         Word::Verb(Verb(noun, word.clone()))
     }
-    pub fn generate(&self) -> Generator {
-        let mut rand = rand::thread_rng();
+    pub fn generate<R: Rng>(&self, mut rand: R) -> Generator<R> {
         let mut words = Vec::new();
 
         let mut num_nouns = 0;
@@ -59,7 +58,7 @@ impl WordsFile {
             }
         }
 
-        let mut gen = Generator::new(words);
+        let mut gen = Generator::new(words, rand);
 
         gen.expect_noun(None);
         loop {
@@ -82,11 +81,11 @@ impl WordsFile {
     }
 }
 
-pub struct Generator {
+pub struct Generator<R: Rng> {
     completed: Vec<Word>,
     words: Vec<Word>,
 
-    rand: ThreadRng
+    rand: R
 }
 // Because specifying function return type is barely possible
 // and `-> impl Iterator {` hasn't been stabilized yet
@@ -95,13 +94,13 @@ macro_rules! indexes {
         $iter.map(|item| item.0)
     }
 }
-impl Generator {
-    pub fn new(words: Vec<Word>) -> Self {
+impl<R: Rng> Generator<R> {
+    pub fn new(words: Vec<Word>, rand: R) -> Self {
         Self {
             completed: Vec::new(),
             words: words,
 
-            rand: rand::thread_rng()
+            rand: rand
         }
     }
     pub fn sample(&mut self, words: &mut Vec<usize>) -> Word {
@@ -154,7 +153,7 @@ impl Generator {
         self.completed.push(self.words.remove(pos.unwrap()));
     }
 }
-impl Display for Generator {
+impl<R: Rng> Display for Generator<R> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let mut he_she_it = false;
         let mut first = true;
