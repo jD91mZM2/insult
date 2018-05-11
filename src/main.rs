@@ -12,10 +12,10 @@ extern crate xdg;
 
 use failure::Error;
 use insult::WordsFile;
-use std::borrow::Cow;
-use std::process;
-use std::fs::File;
-use std::io::{self, Read, Write};
+use std::{
+    borrow::Cow,
+    {fs, io, process}
+};
 use xdg::BaseDirectories;
 
 #[derive(Debug, Fail)]
@@ -57,11 +57,10 @@ fn read_file(xdg: &BaseDirectories, name: &str, default: &'static str)
     -> Result<Cow<'static, str>, io::Error>
 {
     if let Some(config) = xdg.find_config_file(name) {
-        let mut buf = String::new();
-        File::open(config)?.read_to_string(&mut buf)?;
+        let mut buf = fs::read_to_string(config)?;
         Ok(Cow::from(buf))
     } else {
-        File::create(xdg.place_config_file(name)?)?.write_all(default.as_bytes())?;
+        fs::write(xdg.place_config_file(name)?, default)?;
         Ok(Cow::from(default))
     }
 }
