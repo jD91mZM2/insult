@@ -1,5 +1,6 @@
 use WordsFile;
 
+/// Error that can occur when parsing words file
 #[derive(Debug, Fail)]
 pub enum WordsFileCorrupt {
     #[fail(display = "Corrupt words file! Line {} in \"{}\" doesn't have boolean prefix.", _1, _0)]
@@ -8,6 +9,7 @@ pub enum WordsFileCorrupt {
     EmptyFile(&'static str)
 }
 
+/// Parse file into (bool, String). This format can be used in WordsFile.
 pub fn parse_file(name: &'static str, content: &str) -> Result<Vec<(bool, String)>, WordsFileCorrupt> {
     let mut lines = Vec::new();
     for (i, line) in content.lines().enumerate() {
@@ -36,6 +38,7 @@ pub fn parse_file(name: &'static str, content: &str) -> Result<Vec<(bool, String
     Ok(lines)
 }
 
+/// Open the default word files
 pub fn open_default() -> WordsFile {
     WordsFile {
         nouns: parse_file("nouns", include_str!("words/nouns")).expect("built-in words file is broken"),
