@@ -5,54 +5,19 @@
 // What is referred to as "word" is actually not a word by the way.
 // It's a part of a sentence.
 
-#[macro_use] extern crate failure;
+extern crate failure;
 extern crate insult;
 extern crate rand;
 extern crate xdg;
 
 use failure::Error;
-use insult::WordsFile;
+use insult::{parse_file, WordsFile};
 use std::{
     borrow::Cow,
     {fs, io, process}
 };
 use xdg::BaseDirectories;
 
-#[derive(Debug, Fail)]
-enum WordsFileCorrupt {
-    #[fail(display = "Corrupt words file! Line {} in \"{}\" doesn't have boolean prefix.", _1, _0)]
-    Corrupt(&'static str, usize),
-    #[fail(display = "Corrupt words file! File {} is empty!", _0)]
-    EmptyFile(&'static str)
-}
-
-fn parse_file(name: &'static str, content: &str) -> Result<Vec<(bool, String)>, WordsFileCorrupt> {
-    let mut lines = Vec::new();
-    for (i, line) in content.lines().enumerate() {
-        if line.is_empty() || line.starts_with("#") {
-            continue;
-        }
-        let mut parts = line.splitn(2, ",").map(|item| item.trim());
-        let line = match (parts.next(), parts.next()) {
-            (Some(flag), Some(line)) => (if flag.eq_ignore_ascii_case("true") {
-                    true
-                } else if flag.eq_ignore_ascii_case("false") {
-                    false
-                } else {
-                    return Err(WordsFileCorrupt::Corrupt(name, i))
-                }, line.to_string()),
-            (_, _) => {
-                return Err(WordsFileCorrupt::Corrupt(name, i));
-            }
-        };
-        lines.push(line);
-    }
-
-    if lines.is_empty() {
-        return Err(WordsFileCorrupt::EmptyFile(name));
-    }
-    Ok(lines)
-}
 fn read_file(xdg: &BaseDirectories, name: &str, default: &'static str)
     -> Result<Cow<'static, str>, io::Error>
 {
@@ -77,7 +42,7 @@ fn do_main() -> Result<(), Error> {
 
     macro_rules! read_file {
         ($file:expr) => {
-            parse_file($file, &*read_file(&xdg, $file, include_str!($file))?)?
+            parse_file($file, &*read_file(&xdg, $file, include_str!(concat!("words/", $file)))?)?
         }
     }
 

@@ -5,18 +5,18 @@ license = "MIT"
 name = "insult"
 readme = "README.md"
 repository = "https://github.com/jD91mZM2/insult"
-version = "2.0.2"
+version = "2.0.3"
 
 [[bin]]
 name = "insult"
 path = "src/main.rs"
 
 [dependencies]
+failure = "0.1.1"
 rand = "0.5.0"
 
 # These are only binary dependencies.
 # See https://github.com/rust-lang/cargo/issues/1982.
-failure = "0.1.1"
 xdg = "2.1.0"
 
 [lib]

@@ -5,13 +5,16 @@
 // What is referred to as "word" is actually not a word by the way.
 // It's a part of a sentence.
 
+#[macro_use] extern crate failure;
 extern crate rand;
 
 use rand::Rng;
 use std::fmt::{self, Display};
 
+mod parse;
 mod words;
 
+pub use parse::*;
 pub use words::*;
 
 const AMOUNT: u8 = 9 + 2*2; // Board + Tea * 2
